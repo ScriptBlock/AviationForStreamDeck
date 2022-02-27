@@ -1,0 +1,51 @@
+{
+  "Actions": [
+    {
+      "Icon": "action/images/METAR-GREEN", 
+      "Name": "METAR", 
+      "States": [
+        {
+          "Image": "action/images/METAR-GREEN"
+        }
+      ], 
+      "Tooltip": "Show METAR Data", 
+      "UUID": "com.scriptblock.aviationwx.action.metar"
+    },
+    {
+      "Icon": "action/images/TAF-GREEN", 
+      "Name": "TAF", 
+      "States": [
+        {
+          "Image": "action/images/TAF-GREEN"
+        }
+      ], 
+      "Tooltip": "Show TAF Data", 
+      "UUID": "com.scriptblock.aviationwx.action.taf"
+    }
+
+  ], 
+  "SDKVersion": 2,
+  "Category": "Aviation Weather",
+  "Author": "Zambo", 
+  "CodePath": "index.html", 
+  "PropertyInspectorPath": "propertyinspector/index.html", 
+  "Description": "Gather Aviation Weather", 
+  "Name": "Aviation Wx", 
+  "Icon": "action/images/actionimage", 
+  "URL": "https://www.elgato.com/en/gaming/TAF-GREEN", 
+  "Version": "1.0.1",
+  "OS": [
+    {
+        "Platform": "mac", 
+        "MinimumVersion" : "10.11"
+    },
+    {
+        "Platform": "windows", 
+        "MinimumVersion" : "10"
+    }
+  ],
+  "Software": 
+    {
+        "MinimumVersion" : "4.1"
+  }
+}
