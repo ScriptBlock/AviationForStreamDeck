@@ -40,38 +40,6 @@ function connected(jsn) {
     });
 };
 
-// function processMetar(response, context) {
-//     console.log("got full response from wx api", response);
-//     console.log("going to color filght rules for context: " + context)
-
-//     var c = canvassi[context];
-//     var _ctx = c.getContext("2d");
-
-//     var flightRules = response['flight_rules'];
-//     switch (flightRules) {
-//         case 'IFR':
-//             _ctx.fillStyle = '#DB4F63';
-//             _ctx.fillRect(0,0,c.width, c.height);
-//             break;
-//         case 'LIFR':
-//             _ctx.fillStyle = '#DD50D0';
-//             _ctx.fillRect(0,0,c.width, c.height);
-//             break;
-//         case 'MVFR':
-//             _ctx.fillStyle = '#016AA4';
-//             _ctx.fillRect(0,0,c.width, c.height);
-//             break;
-//         case 'VFR':
-//             _ctx.fillStyle = '#01660B';
-//             _ctx.fillRect(0,0,c.width, c.height);
-//             break;
-
-//     }
-
-//     $SD.api.setImage(context, c.toDataURL());
-
-// }
-
 
 function drawImageOnDeck(context, wxJson) {
     if(timers[context]) {
@@ -201,25 +169,6 @@ const action = {
 
         fetchAndPublishMetar(jsn.context, jsn.payload.settings.icao_code, jsn.payload.settings.api_key, drawImageOnDeck);
 
-        // const fetchPromise = fetch("https://avwx.rest/api/metar/" + this.settings.icao_code, 
-        //     {method: 'GET', headers: { 'Authorization': 'BEARER ' + this.settings.api_key, 'Content-Type': 'application/json'}});
-
-        // fetchPromise
-        //     .then( response => {
-        //         if(response.ok) {
-        //             return response.json();
-        //         } else {
-        //             throw new Error({error:{message:"Request Error"}})
-        //         }
-        //     })
-        //     .then( json => {
-        //         console.log("request data as follows:", json)
-        //         return json
-        //     })
-        //     .then (response => processMetar(response, jsn.context))
-        //     .catch (error => {
-        //         console.log(error)
-        //     });
             
     },
 
@@ -229,11 +178,11 @@ const action = {
          * (e.g. some value, which is not saved to settings) 
          * You can send this event from Property Inspector (see there for an example)
          */ 
-        console.log("NZ: onSendToPlugin");
-        const sdpi_collection = Utils.getProp(jsn, 'payload.sdpi_collection', {});
-        if (sdpi_collection.value && sdpi_collection.value !== undefined) {
-            //this.doSomeThing({ [sdpi_collection.key] : sdpi_collection.value }, 'onSendToPlugin', 'fuchsia');            
-        }
+        // console.log("NZ: onSendToPlugin");
+        // const sdpi_collection = Utils.getProp(jsn, 'payload.sdpi_collection', {});
+        // if (sdpi_collection.value && sdpi_collection.value !== undefined) {
+        //     //this.doSomeThing({ [sdpi_collection.key] : sdpi_collection.value }, 'onSendToPlugin', 'fuchsia');            
+        // }
     },
 
     /**
@@ -246,7 +195,7 @@ const action = {
         if (sdpi_collection.hasOwnProperty('key') && sdpi_collection.key != '') {
             if (sdpi_collection.value && sdpi_collection.value !== undefined) {
                 this.settings[sdpi_collection.key] = sdpi_collection.value;
-                console.log('NZ: setSettings....', this.settings);
+                // console.log('NZ: setSettings....', this.settings);
                 $SD.api.setSettings(jsn.context, this.settings);
             }
         }

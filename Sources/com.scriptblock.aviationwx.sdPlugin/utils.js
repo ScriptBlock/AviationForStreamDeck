@@ -276,16 +276,6 @@ function drawWind(canvas, origAngle, speed) {
     return canvas;
 }
 
-// function setup() {
-//     //var _canvas = document.createElement("canvas");
-//     var _canvas = document.getElementById("metar");
-
-//     _canvas.width = 144;
-//     _canvas.height = 144;
-
-//     return _canvas;
-
-// }
 
 function metarData(canvas, windAngle, windSpeed, flightConditions, cloudData, visibility, tempF) {
     console.log("processing metar data and drawing canvas");
@@ -305,9 +295,7 @@ function fetchAndPublishMetar(context, icao, apiKey, callback) {
         console.log("trying to fetch metar but icao or key is missing");
         return;
     }
-    // const fetchPromise = fetch("https://avwx.rest/api/metar/" + icao,
-    // {method: 'GET', headers: { 'Authorization': 'BEARER ' + apiKey, 'Content-Type': 'application/json'}});
-
+ 
     const fetchPromise = fetch("https://api.checkwx.com/metar/" + icao + "/decoded", 
         {method: 'GET', headers: { 'X-API-Key': apiKey, 'Content-Type': 'application/json'}});
 
