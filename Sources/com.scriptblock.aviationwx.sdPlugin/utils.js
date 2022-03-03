@@ -237,10 +237,10 @@ function drawWind(canvas, origAngle, speed) {
     var arcLeft = angle-10;
     var arcRight = angle+10;
     var angleAdjust = 2.5;
-    if(speed >= 5) { angleAdjust = 5;}
-    if(speed >= 10) { angleAdjust = 7;}
-    if(speed >= 15) { angleAdjust = 10;}
-    if(speed > 20) { angleAdjust = 12.5;}
+    if(speed >= 5) { angleAdjust = 8;}
+    if(speed >= 10) { angleAdjust = 10;}
+    if(speed >= 15) { angleAdjust = 12.5;}
+    if(speed > 20) { angleAdjust = 15;}
 
 
     arcLeft = angle-angleAdjust;
@@ -300,6 +300,11 @@ function metarData(canvas, windAngle, windSpeed, flightConditions, cloudData, vi
 
 function fetchAndPublishMetar(context, icao, apiKey, callback) {
     console.log("fetching avwx data in 'fetchandpublishmetar'");
+
+    if(icao == undefined || apiKey == undefined) {
+        console.log("trying to fetch metar but icao or key is missing");
+        return;
+    }
     // const fetchPromise = fetch("https://avwx.rest/api/metar/" + icao,
     // {method: 'GET', headers: { 'Authorization': 'BEARER ' + apiKey, 'Content-Type': 'application/json'}});
 

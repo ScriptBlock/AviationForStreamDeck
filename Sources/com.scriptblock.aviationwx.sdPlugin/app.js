@@ -3,6 +3,8 @@
 var uuid;
 
 var canvassi = {};
+var timers = {};
+var settings = {};
 
 /**
  * Here are a couple of wrappers we created to help you quickly setup
@@ -24,6 +26,7 @@ function connected(jsn) {
     //com.scriptblock.aviationwx.action.metar
 
 
+    $SD.on('com.scriptblock.aviationwx.action.metar.willDisappear', (jsonObj) => action.onWillDisappear(jsonObj));
     $SD.on('com.scriptblock.aviationwx.action.metar.willAppear', (jsonObj) => action.onWillAppear(jsonObj));
     $SD.on('com.scriptblock.aviationwx.action.metar.keyUp', (jsonObj) => action.onKeyUp(jsonObj));
     $SD.on('com.scriptblock.aviationwx.action.metar.keyDown', (jsonObj) => action.onKeyDown(jsonObj));
@@ -71,11 +74,23 @@ function connected(jsn) {
 
 
 function drawImageOnDeck(context, wxJson) {
+    if(timers[context]) {
+        console.log("found timer context for : " + context)
+        clearTimeout(timers[context]);
+        delete timers[context];
+    }
+
     console.log("in drawImageOnDeck callback");
     let thisCanvas = canvassi[context];
     let scene = metarData(thisCanvas, wxJson.data[0].wind.degrees, wxJson.data[0].wind.speed_kts, wxJson.data[0].flight_category, wxJson.data[0], wxJson.data[0].visibility.miles, wxJson.data[0].temperature.fahrenheit)
 
     $SD.api.setImage(context, scene.toDataURL());
+
+    timers[context] = setTimeout(() => {
+        console.log("settimeout executing for : " + context)
+        fetchAndPublishMetar(context, settings[context].icao_code, settings[context].api_key, drawImageOnDeck)
+    }, 600000);
+
 }
 
 // ACTIONS
@@ -86,13 +101,14 @@ const action = {
         // console.log('%c%s', 'color: white; background: red; font-size: 15px;', '[app.js]onDidReceiveSettings:');
         console.log("NZ: received settings from PI");
         this.settings = Utils.getProp(jsn, 'payload.settings', {});
-
+        settings[jsn.context] = jsn.payload.settings;
         var c = canvassi[jsn.context];
         var _drawingCtx = c.getContext("2d");
         _drawingCtx.fillStyle = "#FFFFFF";
         _drawingCtx.fillRect(0,0,c.width, c.height);
-       $SD.api.setImage(jsn.context, c.toDataURL());
+    //    $SD.api.setImage(jsn.context, c.toDataURL());
 
+       fetchAndPublishMetar(jsn.context, jsn.payload.settings.icao_code, jsn.payload.settings.api_key, drawImageOnDeck);
 
         //this.doSomeThing(this.settings, 'onDidReceiveSettings', 'orange');
 
@@ -106,6 +122,26 @@ const action = {
          */
 
         //  this.setTitle(jsn);
+    },
+
+    onWillDisappear: function(jsn) {
+        console.log("NZ: on will disappear");
+        try {
+            delete settings[jsn.context];
+        } catch {
+            console.log("no settings context to delete");
+        }
+
+        try {
+            if(timers[jsn.context]) {
+                console.log("clearing active timer for : " + jsn.context);
+                clearTimeout(timers[jsn.context]);
+            } else {
+                console.log("there is no timer for the disappearing context");
+            }
+        } catch {
+            console.log("error during timer logic");
+        }
     },
 
     /** 
@@ -126,6 +162,7 @@ const action = {
          * 
          * $SD.api.getSettings(jsn.context);
         */
+        settings[jsn.context] = jsn.payload.settings;
         this.settings = jsn.payload.settings;
 
         // Nothing in the settings pre-fill, just something for demonstration purposes
@@ -147,8 +184,9 @@ const action = {
         canvassi[jsn.context] = _canvas;
 
         console.log(this.settings)
+        fetchAndPublishMetar(jsn.context, jsn.payload.settings.icao_code, jsn.payload.settings.api_key, drawImageOnDeck);
 
-        $SD.api.setImage(jsn.context, _canvas.toDataURL());
+        // $SD.api.setImage(jsn.context, _canvas.toDataURL());
 
     },
 
