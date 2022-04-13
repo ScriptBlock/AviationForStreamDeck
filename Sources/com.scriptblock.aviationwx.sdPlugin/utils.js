@@ -65,11 +65,6 @@ function drawCloudLayer(canvas, cloud, segSize, iteration) {
     context.strokeStyle	= "#000000";
     context.strokeRect(0, (segSize*iteration), w, segSize);
 
-    // context.fillStyle = "#FFFFFF";
-    // context.fillRect(0, (segSize*iteration), w, segSize-1);
-    // context.strokeStyle	= "#000000";
-    // context.strokeRect(0, (segSize*iteration), w, segSize-1);				
-    // context.font = "10pt Courier New";
     context.font = font;
     if(cloud.code == "CLR") {
         context.strokeText(cloud.code, w*0.25, segSize*(iteration+1)-(segSize*0.3));
@@ -201,6 +196,9 @@ function drawPieSlice(ctx,centerX, centerY, radius, startAngle, endAngle, color 
 
 function drawWind(canvas, origAngle, speed) {
     console.log("in 'drawWind'");
+    console.log("cavas: ", canvas);
+    console.log("origAngle: ", origAngle);
+    console.log("speed: ", speed);
     var context = canvas.getContext("2d");
     var w = canvas.width;
     var h = canvas.height;
@@ -212,7 +210,7 @@ function drawWind(canvas, origAngle, speed) {
         // context.font = "18pt Courier New";
         context.font = fontMed;
         context.strokeText("CALM",wmid-30,hmid+20);
-        return;
+        return canvas;
 
     }
 
@@ -280,6 +278,7 @@ function drawWind(canvas, origAngle, speed) {
 function metarData(canvas, windAngle, windSpeed, flightConditions, cloudData, visibility, tempF) {
     console.log("processing metar data and drawing canvas");
     canvas = drawFlightConditions(canvas, flightConditions);
+    console.log("in metardata, after flight conditions.  canvas: ", canvas);
     canvas = drawWind(canvas, windAngle, windSpeed);
     canvas = drawTemperature(canvas, tempF);
     canvas = drawClouds(canvas, cloudData);
@@ -289,7 +288,6 @@ function metarData(canvas, windAngle, windSpeed, flightConditions, cloudData, vi
 
 
 function fetchAndPublishMetar(context, icao, apiKey, callback) {
-    console.log("fetching avwx data in 'fetchandpublishmetar'");
 
     if(icao == undefined || apiKey == undefined) {
         console.log("trying to fetch metar but icao or key is missing");
@@ -308,7 +306,7 @@ function fetchAndPublishMetar(context, icao, apiKey, callback) {
             }
         })
         .then( json => {
-            console.log("request data as follows:", json)
+            console.log("request data as follows json/context:", json, context)
             return json
         })
         .then (response => {

@@ -81,10 +81,7 @@ $SD.on('connected', (jsn) => {
 
 $SD.on('sendToPropertyInspector', jsn => {
     const pl = jsn.payload;
-    console.log("NZ: triggered 'sendToPropertyInspector'")
-    /**
-     *  This is an example, how you could show an error to the user
-     */
+
      if (pl.hasOwnProperty('error')) {
         sdpiWrapper.innerHTML = `<div class="sdpi-item">
             <details class="message caution">
@@ -93,22 +90,13 @@ $SD.on('sendToPropertyInspector', jsn => {
             </details>
         </div>`;
     } else {
-
-        /**
-         *
-         * Do something with the data sent from the plugin
-         * e.g. update some elements in the Property Inspector's UI.
-         *
-         */
     }
 });
 
 const updateUI = (pl) => {
-    console.log("NZ: updateUI");
     Object.keys(pl).map(e => {
         if (e && e != '') {
             const foundElement = document.querySelector(`#${e}`);
-            console.log(`searching for: #${e}`, 'found:', foundElement);
             if (foundElement && foundElement.type !== 'file') {
                 foundElement.value = pl[e];
                 const maxl = foundElement.getAttribute('maxlength') || 50;
@@ -123,43 +111,9 @@ const updateUI = (pl) => {
    })
 }
 
-/**
- * Something in the PI changed:
- * either you clicked a button, dragged a slider or entered some text
- *
- * The 'piDataChanged' event is sent, if data-changes are detected.
- * The changed data are collected in a JSON structure
- *
- * It looks like this:
- *
- *  {
- *      checked: false
- *      group: false
- *      index: 0
- *      key: "mynameinput"
- *      selection: []
- *      value: "Elgato"
- *  }
- *
- * If you set an 'id' to an input-element, this will get the 'key' of this object.
- * The input's value will get the value.
- * There are other fields (e.g.
- *      - 'checked' if you clicked a checkbox
- *      - 'index', if you clicked an element within a group of other elements
- *      - 'selection', if the element allows multiple-selections
- * )
- *
- * Please note:
- * the template creates this object for the most common HTML input-controls.
- * This is a convenient way to start interacting with your plugin quickly.
- *
- */
 
 $SD.on('piDataChanged', (returnValue) => {
 
-    console.log("NZ: PI DataChanged")
-    // console.log('%c%s', 'color: white; background: blue}; font-size: 15px;', 'piDataChanged');
-    // console.log(returnValue);
     
     if (returnValue.key === 'clickme') {
 
@@ -204,7 +158,6 @@ $SD.on('piDataChanged', (returnValue) => {
  */
 
  function saveSettings(sdpi_collection) {
-    console.log("NZ: Saving settings")
     if (typeof sdpi_collection !== 'object') return;
 
     if (sdpi_collection.hasOwnProperty('key') && sdpi_collection.key != '') {
@@ -230,7 +183,6 @@ $SD.on('piDataChanged', (returnValue) => {
   */
 
  function sendValueToPlugin(value, prop) {
-    console.log("NZ: sendValueToPlugin", value, prop);
     if ($SD.connection && $SD.connection.readyState === 1) {
         const json = {
             action: $SD.actionInfo['action'],
